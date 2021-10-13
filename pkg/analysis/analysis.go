@@ -101,13 +101,9 @@ func GetMemory() {
 	var overall [][]int
 	for i := 0; i < 4; i++ {
 
-		// Allocate memory using make() and append to overall (so it doesn't get
-		// garbage collected). This is to create an ever increasing memory usage
-		// which we can track. We're just using []int as an example.
 		a := make([]int, 0, 999999)
 		overall = append(overall, a)
 
-		// Print our memory usage at each interval
 		PrintMemUsage()
 		time.Sleep(time.Second)
 	}
