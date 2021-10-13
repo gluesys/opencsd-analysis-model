@@ -18,12 +18,6 @@ type Analysis struct {
 	Energy float64 `json:"energy"`
 }
 
-// var flag = 1
-
-// func SetFlag(flagChan chan int) {
-// 	flag = <-flagChan
-// }
-
 func cpuMeasure() (idle, total uint64) {
 	contents, err := ioutil.ReadFile("/proc/stat")
 	if err != nil {
@@ -53,8 +47,6 @@ func cpuMeasure() (idle, total uint64) {
 var ssdCpu, csdCpu = 0, 0
 
 func GetCPU(cpuChan chan float64) {
-	// var cpuList []float64
-	// for {
 	idle0, total0 := cpuMeasure()
 	time.Sleep(1 * time.Second)
 	idle1, total1 := cpuMeasure()
