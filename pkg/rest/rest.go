@@ -11,7 +11,6 @@ import (
 )
 
 var flag = 1
-var ans analysis.Analysis
 
 func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	log.Println("Measure Start Request")
@@ -57,7 +56,6 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		Energy: predict,
 	}
 	log.Println(measure)
-	ans = measure
 	jsonString, err := json.Marshal(measure)
 	if err != nil {
 		log.Println(err)
