@@ -148,6 +148,59 @@ func printClient(res Response) {
 	}
 }
 
+func getTableSchema(tableName string) TableSchema {
+	// TODO 스키마 데이터 로드하는 형식으로 바꿔야함 (queryEngine or ddl)
+	schema := make(map[string]TableSchema)
+	schema["employees"] = TableSchema{
+		ColumnNames: []string{"emp_no", "birth_date", "first_name", "last_name", "gender", "hire_date"},
+		ColumnTypes: []string{"int", "date", "char", "char", "char", "date"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, -1, 30, 30, 1, -1},                             // Data Size}
+	}
+	schema["nation"] = TableSchema{
+		ColumnNames: []string{"N_NATIONKEY", "N_NAME", "N_REGIONKEY", "N_COMMENT"},
+		ColumnTypes: []string{"int", "char", "int", "char"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, 25, 8, 152},                   // Data Size}
+	}
+	schema["region"] = TableSchema{
+		ColumnNames: []string{"R_REGIONKEY", "R_NAME", "R_COMMENT"},
+		ColumnTypes: []string{"int", "char", "varchar"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, 8, 152},                   // Data Size}
+	}
+	schema["part"] = TableSchema{
+		ColumnNames: []string{"P_PARTKEY", "P_NAME", "P_MFGR", "P_BRAND", "P_TYPE", "P_SIZE", "P_CONTAINER", "P_RETAILPRICE", "P_COMMENT"},
+		ColumnTypes: []string{"int", "varchar", "char", "char", "varchar", "int", "char", "decimal(15,2)", "varchar"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, 55, 25, 10, 25, 8, 10, 15, 101},                                                         // Data Size}
+	}
+	schema["supplier"] = TableSchema{
+		ColumnNames: []string{"S_SUPPKEY", "S_NAME", "S_ADDRESS", "S_NATIONKEY", "S_PHONE", "S_ACCTBAL", "S_COMMENT"},
+		ColumnTypes: []string{"int", "char", "varchar", "int", "char", "decimal(15,2)", "varchar"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, 25, 40, 8, 15, 15, 101},                                              // Data Size}
+	}
+	schema["partsupp"] = TableSchema{
+		ColumnNames: []string{"PS_PARTKEY", "PS_SUPPKEY", "PS_AVAILQTY", "PS_SUPPLYCOST", "PS_COMMENT"},
+		ColumnTypes: []string{"int", "varchar", "varchar", "int", "char", "decimal(15,2)", "char", "varchar"}, // int, char, varchar, TEXT, DATETIME,  ...
+		//ColumnSizes: []int{110325, 110325, 110325, 110325},  // Data Size}
+		ColumnSizes: []int{8, 25, 40, 8, 15, 15, 10, 117}, // Data Size}
+	}
+	schema["customer"] = TableSchema{
+		ColumnNames: []string{"C_CUSTKEY", "C_NAME", "C_ADDRESS", "C_NATIONKEY", "C_PHONE", "C_ACCTBAL", "C_MKTSEGMENT", "C_COMMENT"},
+		ColumnTypes: []string{"int", "varchar", "varchar", "int", "char", "decimal(15,2)", "char", "varchar"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, 25, 40, 8, 15, 15, 10, 117},                                                     // Data Size}
+	}
+	schema["orders"] = TableSchema{
+		ColumnNames: []string{"O_ORDERKEY", "O_CUSTKEY", "O_ORDERSTATUS", "O_TOTALPRICE", "O_ORDERDATE", "O_ORDERPRIORITY", "O_CLERK", "O_SHIPPRIORITY", "O_COMMENT"},
+		ColumnTypes: []string{"int", "int", "char", "decimal(15,2)", "date", "char", "char", "int", "varchar"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, 8, 1, 15, -1, 15, 15, 8, 79},                                                     // Data Size}
+	}
+	schema["lineitem"] = TableSchema{
+		ColumnNames: []string{"L_ORDERKEY", "L_PARTKEY", "L_SUPPKEY", "L_LINENUMBER", "L_QUANTITY", "L_EXTENDEDPRICE", "L_DISCOUNT", "L_TAX", "L_RETURNFLAG", "L_LINESTATUS", "L_SHIPDATE", "L_COMMITDATE", "L_RECEIPTDATE", "L_SHIPINSTRUCT", "L_SHIPMODE", "L_COMMENT"},
+		ColumnTypes: []string{"int", "int", "int", "int", "decimal(15,2)", "decimal(15,2)", "decimal(15,2)", "decimal(15,2)", "char", "char", "date", "date", "date", "char", "char", "varchar"}, // int, char, varchar, TEXT, DATETIME,  ...
+		ColumnSizes: []int{8, 8, 8, 8, 15, 15, 15, 15, 1, 1, -1, -1, 25, 10, 44},                                                                                                                 // Data Size}
+	}
+
+	return schema[tableName]
+}
+
 func main() {
 	log.SetFlags(log.Lshortfile)
 }
