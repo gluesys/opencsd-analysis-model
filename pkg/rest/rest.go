@@ -66,18 +66,9 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 
 func EndMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	log.Println("Measure End Request")
-	// flagChan := make(chan int)
-	// analysis.SetFlag(flagChan)
-	// flagChan <- 1
-	// analysis.SetFlag(flagChan)
-	flag = 0
-	// log.Println(ans)
-	// jsonString, err := json.Marshal(ans)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
 
-	// w.Write(jsonString)
+	flag = 0
+
 }
 
 func Run() {
