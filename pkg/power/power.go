@@ -51,6 +51,7 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 
 	fmt.Println(powerMax)
 	fmt.Println(memMin)
+	log.Println("recieve records -> len =", len(records))
 }
 
 func (f *formula) getCoefficient(formula string) (err error) {
