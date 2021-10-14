@@ -28,6 +28,7 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	var cpuList []float64
 	var memList []float64
 	var powerList []float64
+	var powerAvg float64
 
 	if onCSD != 0 {
 		fp := power.NewFormula()
@@ -71,11 +72,14 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		for _, power := range powerList {
 			powerTotal = powerTotal + power
 		}
-		powerAvg := powerTotal / float64(len(powerList))
+		powerAvg = powerTotal / float64(len(powerList))
 	}
 
 	log.Println("CPU Usage", cpuAvg)
 	log.Println("MEM Usage", memAvg)
+	if onCSD == 0 {
+		log.Println("POWER Usage", powerAvg)
+	}
 
 	predict := 96.2107 + (cpuAvg * -(0.4059)) + (memAvg * (-17.2624))
 	log.Println("POWER Usage", predict)
