@@ -1,7 +1,16 @@
 package simulator
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+	"simulator/analysis"
 	types "simulator/type"
+	"strconv"
+	"strings"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 type Snippet struct {
@@ -63,4 +72,82 @@ type ResponseA struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
+}
+
+var flag = 1
+var ans analysis.Analysis
+
+const rootDirectory = "/root/workspace/usr/coyg/module/tpch/"
+
+func resJsonParser(jsonDataString string) Response {
+	var res Response
+
+	if err := json.Unmarshal([]byte(jsonDataString), &res); err != nil {
+		log.Fatal(err)
+	}
+
+	return res
+}
+
+func isAggregateFunc(atom string) (bool, string) {
+	aggregateList := []string{"count", "sum", "avg", "max", "min"}
+	for _, aggregater := range aggregateList {
+		if strings.Contains(atom, aggregater+"(") {
+			return true, aggregater
+		}
+	}
+	return false, ""
+}
+func isOperator(atom string) (bool, string) {
+	opList := []string{"and", "or"}
+	for _, op := range opList {
+		atom = strings.ToLower(atom)
+		if atom == op {
+			return true, op
+		}
+	}
+	return false, ""
+}
+func isEXP(atom string) (bool, string) {
+	expList := []string{">=", "<=", ">", "<", "="}
+	for _, exp := range expList {
+		if strings.Contains(atom, exp) {
+			return true, exp
+		}
+	}
+	return false, ""
+}
+func printClient(res Response) {
+	if res.Code == 200 {
+
+		datas := [][]string{}
+
+		for _, value := range res.Data.Values {
+			data := []string{}
+			for _, field := range res.Data.Field {
+				data = append(data, string(value[field]))
+			}
+
+			datas = append(datas, data)
+
+		}
+
+		fmt.Println()
+
+		table := tablewriter.NewWriter(os.Stdout)
+
+		table.SetHeader(res.Data.Field)
+		table.SetBorder(true)
+		table.SetAutoFormatHeaders(false)
+		table.SetCaption(true, "Total: "+strconv.Itoa(len(datas)))
+		table.AppendBulk(datas)
+		table.Render()
+
+	} else {
+		log.Fatal(res.Message)
+	}
+}
+
+func main() {
+	log.SetFlags(log.Lshortfile)
 }
