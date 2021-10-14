@@ -19,11 +19,6 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	var cpuList []float64
 	var memList []float64
 
-	// analysis.GetCPU(flagChan, avgChan)
-	// go analysis.GetCPU(cpuChan)
-	// go analysis.GetMem()
-	// log.Println(ans)
-
 	for {
 		if flag == 0 {
 			break
