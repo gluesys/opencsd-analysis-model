@@ -1,9 +1,49 @@
+# github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
+github.com/ScaleFT/sshkeys
+# github.com/appleboy/easyssh-proxy v1.3.9
+## explicit
+github.com/appleboy/easyssh-proxy
+# github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a
+github.com/dchest/bcrypt_pbkdf
 # github.com/julienschmidt/httprouter v1.3.0
 ## explicit
 github.com/julienschmidt/httprouter
 # github.com/mackerelio/go-osstat v0.2.0
 ## explicit
 github.com/mackerelio/go-osstat/memory
-# golang.org/x/sys v0.0.0-20210113181707-4bcb84eeeb78
+# github.com/sajari/regression v1.0.1
+## explicit
+github.com/sajari/regression
+# golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
+golang.org/x/crypto/blowfish
+golang.org/x/crypto/chacha20
+golang.org/x/crypto/curve25519
+golang.org/x/crypto/ed25519
+golang.org/x/crypto/ed25519/internal/edwards25519
+golang.org/x/crypto/internal/subtle
+golang.org/x/crypto/poly1305
+golang.org/x/crypto/ssh
+golang.org/x/crypto/ssh/agent
+golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
+# golang.org/x/sys v0.0.0-20210304124612-50617c2ba197
+golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
+# gonum.org/v1/gonum v0.9.3
+## explicit
+gonum.org/v1/gonum/blas
+gonum.org/v1/gonum/blas/blas64
+gonum.org/v1/gonum/blas/cblas128
+gonum.org/v1/gonum/blas/gonum
+gonum.org/v1/gonum/floats
+gonum.org/v1/gonum/floats/scalar
+gonum.org/v1/gonum/internal/asm/c128
+gonum.org/v1/gonum/internal/asm/c64
+gonum.org/v1/gonum/internal/asm/f32
+gonum.org/v1/gonum/internal/asm/f64
+gonum.org/v1/gonum/internal/cmplx64
+gonum.org/v1/gonum/internal/math32
+gonum.org/v1/gonum/lapack
+gonum.org/v1/gonum/lapack/gonum
+gonum.org/v1/gonum/lapack/lapack64
+gonum.org/v1/gonum/mat

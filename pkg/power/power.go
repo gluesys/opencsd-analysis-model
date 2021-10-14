@@ -7,6 +7,17 @@ import (
 	"strings"
 )
 
+func NewFormula() *FormulaProvider {
+	fp := &FormulaProvider{
+		Formula:      formula{},
+		HasFormula:   false,
+		FormulaSlice: make([][]string, 0),
+		PowerChan:    make([]float64, 0),
+	}
+
+	return fp
+}
+
 func (fp *FormulaProvider) GetPower(powerchan chan float64) {
 
 	cmd := exec.Command("turbostat", "--Summary", "-i", "1", "-n", "1", "-s", "PkgWatt")
