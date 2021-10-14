@@ -15,8 +15,6 @@ var ans analysis.Analysis
 
 func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	log.Println("Measure Start")
-	// flagChan := make(chan int)
-	// avgChan := make(chan float64)
 	cpuChan := make(chan float64)
 	memChan := make(chan float64)
 	var cpuList []float64
