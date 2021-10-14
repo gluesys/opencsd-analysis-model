@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/sajari/regression"
 	"gonum.org/v1/gonum/floats"
 )
 
@@ -65,7 +66,20 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 		memory := record[2]
 		memory = (memory - memMin) / (memMax - memMin)
 
+		fp.Formula.Regression.Train(regression.DataPoint(power, []float64{cpu, memory}))
 	}
+	// Train/fit the regression model.
+	err := fp.Formula.Regression.Run()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = fp.Formula.getCoefficient(fp.Formula.Regression.Formula)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return a, b, intercept
 }
 
 func (f *formula) getCoefficient(formula string) (err error) {
