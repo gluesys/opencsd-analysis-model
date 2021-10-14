@@ -45,20 +45,6 @@ func (f *formula) getCoefficient(formula string) (err error) {
 				return err
 			}
 			log.Println(f.Beta)
-			/*
-				case "Network":
-					f.gamma, err = strconv.ParseFloat(strValue, 64)
-					if err != nil {
-						return err
-					}
-
-				case "Disk":
-					f.delta, err = strconv.ParseFloat(strValue, 64)
-					if err != nil {
-						return err
-					}
-				}
-			*/
 		}
 
 	}
