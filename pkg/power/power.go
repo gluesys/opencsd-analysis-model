@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	"gonum.org/v1/gonum/floats"
 )
 
 func NewFormula() *FormulaProvider {
@@ -39,6 +41,10 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 		cpuslice = append(cpuslice, records[i][1])
 		memslice = append(memslice, records[i][2])
 	}
+	powerMax := floats.Max(powerslice)
+	powerMin := floats.Min(powerslice)
+	cpuMax := floats.Max(cpuslice)
+	cpuMin := floats.Min(cpuslice)
 }
 
 func (f *formula) getCoefficient(formula string) (err error) {
