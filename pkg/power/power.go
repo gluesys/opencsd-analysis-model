@@ -19,6 +19,13 @@ func NewFormula() *FormulaProvider {
 	return fp
 }
 
+func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, intercept float64) {
+	records := make([][]float64, 0, len(start))
+	powerslice := make([]float64, 0, len(start))
+	cpuslice := make([]float64, 0, len(start))
+	memslice := make([]float64, 0, len(start))
+}
+
 func (f *formula) getCoefficient(formula string) (err error) {
 	temp := strings.Split(formula, " = ")
 	spstring := strings.Split(temp[1], " + ")
