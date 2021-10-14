@@ -26,6 +26,41 @@ func (f *formula) getCoefficient(formula string) (err error) {
 		return err
 	}
 	spstring = spstring[1:]
+	for _, atom := range spstring {
+		temp := strings.Split(atom, "*")
+		metric := temp[0]
+		strValue := temp[1]
+		switch metric {
+		case "Cpu":
+			f.Alpha, err = strconv.ParseFloat(strValue, 64)
+			if err != nil {
+				return err
+			}
+			log.Println(f.Alpha)
+
+		case "Memory":
+			f.Beta, err = strconv.ParseFloat(strValue, 64)
+			if err != nil {
+				return err
+			}
+			log.Println(f.Beta)
+			
+				case "Network":
+					f.gamma, err = strconv.ParseFloat(strValue, 64)
+					if err != nil {
+						return err
+					}
+
+				case "Disk":
+					f.delta, err = strconv.ParseFloat(strValue, 64)
+					if err != nil {
+						return err
+					}
+				}
+			
+		}
+
+	}
 
 	return nil
 
