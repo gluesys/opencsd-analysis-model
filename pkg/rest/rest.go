@@ -13,10 +13,6 @@ import (
 var flag = 1
 var ans analysis.Analysis
 
-// func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-// 	fmt.Fprint(w, "Welcome!\n")
-// }
-
 func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	log.Println("Measure Start")
 	// flagChan := make(chan int)
@@ -90,7 +86,6 @@ func EndMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 func Run() {
 	router := httprouter.New()
-	// router.GET("/", Index)
 	router.GET("/start/measure", StartMeasure)
 	router.GET("/end/measure", EndMeasure)
 
