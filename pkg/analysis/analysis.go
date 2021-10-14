@@ -90,17 +90,12 @@ func GetMem(memChan chan float64) {
 func GetMemory() {
 	PrintMemUsage()
 
-	// var overall [][]int
 	for i := 0; i < 4; i++ {
-
-		// a := make([]int, 0, 999999)
-		// overall = append(overall, a)
 
 		PrintMemUsage()
 		time.Sleep(time.Second)
 	}
 
-	// overall = nil
 	PrintMemUsage()
 
 	runtime.GC()
