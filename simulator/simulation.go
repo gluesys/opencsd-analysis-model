@@ -546,6 +546,78 @@ func checkWhere(where types.Where, schema types.TableSchema, currentMap map[stri
 	return rebuildMap(currentMap, resultIndex)
 }
 
+func Filtering(filterData ScanData) FilterData {
+
+	body, err := json.Marshal(filterData)
+	if err != nil {
+		log.Println(err)
+	}
+
+	recieveData := &ScanData{}
+	err = json.Unmarshal(body, recieveData)
+	if err != nil {
+		log.Println(err)
+	}
+
+	data := recieveData.Snippet
+	tableData := recieveData.Tabledata
+
+	var tempData map[string][]string
+	tempData = map[string][]string{}
+
+	if len(data.Parsedquery.WhereClauses) == 0 {
+		fmt.Println("Nothing to Filter")
+		tempData = tableData
+	} else {
+		tempData = checkWhere(data.Parsedquery.WhereClauses[0], data.TableSchema, tableData)
+		if data.Parsedquery.WhereClauses[0].Operator != "NULL" {
+			prevOerator := data.Parsedquery.WhereClauses[0].Operator
+			wheres := data.Parsedquery.WhereClauses[1:]
+			for i, where := range wheres {
+				switch prevOerator {
+				case "AND":
+					tempData = checkWhere(where, data.TableSchema, tempData)
+				case "OR":
+					tempData2 := checkWhere(where, data.TableSchema, tableData)
+					union := make(map[string][]string)
+					for header, data := range tempData2 {
+						union[header] = make([]string, 0)
+						union[header] = append(union[header], data...)
+						union[header] = append(union[header], tempData[header]...)
+						union[header] = makeSliceUnique(union[header])
+					}
+					tempData = union
+				}
+				prevOerator = data.Parsedquery.WhereClauses[i].Operator
+			}
+		}
+		rowCount := 0
+		for header, _ := range tempData {
+			if header != "" {
+				rowCount = len(tempData[header])
+				break
+			}
+		}
+		fmt.Println(time.Now().Format(time.StampMilli), "Complete Filter", rowCount)
+	}
+
+	fmt.Println(time.Now().Format(time.StampMilli), "Send to Output Layer")
+
+	resp := &types.QueryResponse{
+		Table:         data.Parsedquery.TableName,
+		BufferAddress: data.BufferAddress,
+		Field:         makeColumnToString(data.Parsedquery.Columns, data.TableSchema),
+		Values:        make([]map[string]string, 0),
+	}
+
+	outputBody := &FilterData{}
+	outputBody.Result = *resp
+	outputBody.TempData = tempData
+
+	// outputBody
+	return *outputBody
+}
+
 func main() {
 	log.SetFlags(log.Lshortfile)
 }
