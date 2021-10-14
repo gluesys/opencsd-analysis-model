@@ -401,6 +401,31 @@ func Scan(snippet Snippet) ScanData {
 	return *filterBody
 }
 
+// filter
+func foundIndex(str []string, target string) int {
+	index := -1
+	for i := 0; i < len(str); i++ {
+		if str[i] == target {
+			index = i
+			break
+		}
+	}
+	return index
+}
+func rebuildMap(currentMap map[string][]string, index []int) map[string][]string {
+	resultMap := make(map[string][]string)
+	for header, data := range currentMap {
+		if header != "" {
+			resultMap[header] = make([]string, 0)
+			for i := 0; i < len(index); i++ {
+				resultMap[header] = append(resultMap[header], data[index[i]])
+			}
+		}
+	}
+
+	return resultMap
+}
+
 func main() {
 	log.SetFlags(log.Lshortfile)
 }
