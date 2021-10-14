@@ -33,8 +33,8 @@ func cpuMeasure() (idle, total uint64) {
 				if err != nil {
 					fmt.Println("Error: ", i, fields[i], err)
 				}
-				total += val // tally up all the numbers to get total ticks
-				if i == 4 {  // idle is the 5th field in the cpu line
+				total += val
+				if i == 4 {
 					idle = val
 				}
 			}
