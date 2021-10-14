@@ -1,4 +1,4 @@
-package simulator
+package main
 
 import (
 	"bufio"
@@ -808,16 +808,12 @@ func main() {
 	log.SetFlags(log.Lshortfile)
 
 	measureChan := make(chan analysis.Analysis)
-	// ff := make(chan int)
-	// ff <- 1
 	var qList []string
 	// query1 := "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer WHERE C_CUSTKEY=525"
 	// query2 := "SELECT L_ORDERKEY, L_QUANITITY FROM lineitem WHERE L_ORDERKEY=3"
 	// query3 := "SELECT N_NATIONKEY, N_NAME, N_COMMENT FROM nation WHERE N_REGIONKEY=3"
 	// query4 := "SELECT S_SUPPKEY FROM supplier WHERE S_SUPPKEY=4"
 	// query2 := "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer"
-
-	// var queryEndTime float64
 
 	qList = append(qList, "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer WHERE C_CUSTKEY=525")
 	qList = append(qList, "SELECT L_ORDERKEY, L_QUANITITY FROM lineitem WHERE L_ORDERKEY=3")
