@@ -24,6 +24,21 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 	powerslice := make([]float64, 0, len(start))
 	cpuslice := make([]float64, 0, len(start))
 	memslice := make([]float64, 0, len(start))
+	for i, s := range start {
+		r := make([]float64, 0, len(s))
+		for _, atom := range s {
+			record, err := strconv.ParseFloat(atom, 64)
+			if err != nil {
+				klog.Errorln(err)
+			}
+			r = append(r, record)
+		}
+		fmt.Println(r)
+		records = append(records, r)
+		powerslice = append(powerslice, records[i][0])
+		cpuslice = append(cpuslice, records[i][1])
+		memslice = append(memslice, records[i][2])
+	}
 }
 
 func (f *formula) getCoefficient(formula string) (err error) {
