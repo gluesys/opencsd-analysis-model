@@ -45,6 +45,12 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 	powerMin := floats.Min(powerslice)
 	cpuMax := floats.Max(cpuslice)
 	cpuMin := floats.Min(cpuslice)
+
+	memMax := floats.Max(memslice)
+	memMin := floats.Min(memslice)
+
+	fmt.Println(powerMax)
+	fmt.Println(memMin)
 }
 
 func (f *formula) getCoefficient(formula string) (err error) {
