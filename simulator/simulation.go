@@ -809,24 +809,12 @@ func main() {
 
 	measureChan := make(chan analysis.Analysis)
 	var qList []string
-	// query1 := "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer WHERE C_CUSTKEY=525"
-	// query2 := "SELECT L_ORDERKEY, L_QUANITITY FROM lineitem WHERE L_ORDERKEY=3"
-	// query3 := "SELECT N_NATIONKEY, N_NAME, N_COMMENT FROM nation WHERE N_REGIONKEY=3"
-	// query4 := "SELECT S_SUPPKEY FROM supplier WHERE S_SUPPKEY=4"
-	// query2 := "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer"
 
 	qList = append(qList, "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer WHERE C_CUSTKEY=525")
 	qList = append(qList, "SELECT L_ORDERKEY, L_QUANITITY FROM lineitem WHERE L_ORDERKEY=3")
 	qList = append(qList, "SELECT PS_PARTKEY, PS_SUPPKEY FROM partsupp")
 	qList = append(qList, "SELECT O_ORDERKEY, O_CUSTKEY FROM orders WHERE O_ORDERSTATUS=O")
 	// qList = append(qList, "SELECT P_PARTKEY FROM part")
-
-	// qList = append(qList, query3)
-	// qList = append(qList, query4)
-	// qList = append(qList, "SELECT * FROM orders WHERE O_ORDERKEY=66")
-	// qList = append(qList, "SELECT PS_PARTKEY, PS_SUPPKEY FROM partsupp")
-	// qList = append(qList, query1)
-	// qList = append(qList, query1)
 
 	var ssdList []SSDInfo
 	var csdList []CSDInfo
