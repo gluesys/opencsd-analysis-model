@@ -327,6 +327,69 @@ func Parse(query string) (ParsedQuery, error) {
 	return parsedQuery, nil
 }
 
+func RequestSnippet(query string) (t float64, result []byte) {
+	parsedQuery, err := Parse(query)
+	if err != nil {
+		log.Println(err)
+		// return
+	}
+
+	tableSchema := getTableSchema(parsedQuery.TableName)
+	blockOffset := 312476        // TODO 바꿔야함
+	bufferAddress := "0x0847583" // TODO 바꿔야함
+
+	snippet := Snippet{
+		ParsedQuery:   parsedQuery,
+		TableSchema:   tableSchema,
+		BlockOffset:   blockOffset,
+		BufferAddress: bufferAddress,
+	}
+	json_snippet_byte, err := json.MarshalIndent(snippet, "", "  ")
+	//json_snippet_byte, err := json.Marshal(snippet)
+	if err != nil {
+		fmt.Println(err)
+		// return
+	}
+	// 입력확인
+	fmt.Println(string(json_snippet_byte))
+
+	startTime := time.Now()
+	// TODO: input, scan, filter, output
+	// input
+	time.Sleep(1000)
+	// scan
+	filterBody := Scan(snippet)
+	// log.Println(filterBody)
+	// filter
+	filterData := Filtering(filterBody)
+	// output
+	resA := Output(filterData)
+	log.Println(resA)
+
+	bytes, err := json.Marshal(resA)
+	if err != nil {
+		log.Println(err)
+	}
+	jsonDataString := string(bytes)
+
+	res := resJsonParser(jsonDataString)
+	res_byte, _ := json.MarshalIndent(res, "", "  ")
+
+	fmt.Println("\n[ Result ]")
+	fmt.Println(string(res_byte))
+
+	printClient(res)
+
+	endTime := time.Since(startTime).Seconds()
+	fmt.Printf("%0.1f sec\n", endTime)
+	// fmt.Printf("199.7 sec\n")
+
+	var jsonString []byte
+	// jsonString = <-c
+	// tableSchema := getTableSchema(parsedQuery.TableName)
+	return endTime, jsonString
+}
+
 // SCAN
 func makeColumnToString(reqColumn []types.Select, schema types.TableSchema) []string {
 	result := make([]string, 0)
