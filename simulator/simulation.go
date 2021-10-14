@@ -12,6 +12,7 @@ import (
 	types "simulator/type"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -424,6 +425,125 @@ func rebuildMap(currentMap map[string][]string, index []int) map[string][]string
 	}
 
 	return resultMap
+}
+func makeSliceUnique(s []string) []string {
+	keys := make(map[string]struct{})
+	res := make([]string, 0)
+	for _, val := range s {
+		if _, ok := keys[val]; ok {
+			continue
+		} else {
+			keys[val] = struct{}{}
+			res = append(res, val)
+		}
+	}
+	return res
+}
+func checkWhere(where types.Where, schema types.TableSchema, currentMap map[string][]string) map[string][]string {
+	resultIndex := make([]int, 0)
+	columnIndex := foundIndex(schema.ColumnNames, where.LeftValue)
+	if schema.ColumnTypes[columnIndex] == "int" {
+		currentColumn := currentMap[where.LeftValue]
+		rv, err := strconv.Atoi(where.RightValue)
+		if err != nil {
+			//klog.Errorln(err)
+		}
+		for i := 0; i < len(currentColumn); i++ {
+			lv, err := strconv.Atoi(currentColumn[i])
+			if err != nil {
+				//klog.Errorln(err)
+			}
+			switch where.Exp {
+			case "=":
+				if lv == rv {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case ">=":
+				if lv >= rv {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case "<=":
+				if lv <= rv {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case ">":
+				if lv > rv {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case "<":
+				if lv < rv {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+
+			}
+		}
+	} else if schema.ColumnTypes[columnIndex] == "date" {
+		currentColumn := currentMap[where.LeftValue]
+		where.RightValue = where.RightValue[1 : len(where.RightValue)-1]
+		rv, err := time.Parse("2006-01-02", where.RightValue)
+		if err != nil {
+			//klog.Errorln(err)
+		}
+		for i := 0; i < len(currentColumn); i++ {
+			lv, err := time.Parse("2006-01-02", currentColumn[i])
+			if err != nil {
+				//klog.Errorln(err)
+			}
+			switch where.Exp {
+			case "=":
+				if lv.Unix() == rv.Unix() {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case ">=":
+				if lv.Unix() >= rv.Unix() {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case "<=":
+				if lv.Unix() <= rv.Unix() {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case ">":
+				if lv.Unix() > rv.Unix() {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+			case "<":
+				if lv.Unix() < rv.Unix() {
+					resultIndex = append(resultIndex, i)
+				} else {
+					continue
+				}
+
+			}
+		}
+	} else {
+		currentColumn := currentMap[where.LeftValue]
+		for i := 0; i < len(currentColumn); i++ {
+			if currentColumn[i] == where.RightValue {
+				resultIndex = append(resultIndex, i)
+			} else {
+				continue
+			}
+		}
+	}
+	return rebuildMap(currentMap, resultIndex)
 }
 
 func main() {
