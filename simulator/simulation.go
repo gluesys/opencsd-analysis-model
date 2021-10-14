@@ -2,6 +2,7 @@ package simulator
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -199,6 +200,117 @@ func getTableSchema(tableName string) TableSchema {
 	}
 
 	return schema[tableName]
+}
+
+func Parse(query string) (ParsedQuery, error) {
+	// whereSlice := strings.Split(query, "WHERE")
+	// whereSlice = strings.Split(query, "")
+	querySlice := strings.Split(query, " ")
+	parsedQuery := ParsedQuery{
+		TableName:    "",
+		Columns:      make([]Select, 0),
+		WhereClauses: make([]Where, 0),
+	}
+	index := 0
+	whereSlice := make([]string, 3)
+	operatorFlag := false
+	selectAllFlag := false
+
+	flag := 0
+	for _, atom := range querySlice {
+		if strings.ToLower(atom) == "select" {
+			//klog.Infoln("First Element select")
+			//klog.Infoln("Current Index", index)
+			continue
+		} else if strings.ToLower(atom) == "from" {
+			//klog.Infoln("Second Element from")
+			index++
+			//klog.Infoln("Current Index", index)
+			continue
+		} else if strings.ToLower(atom) == "where" {
+			//klog.Infoln("Third Element from")
+			index++
+			flag = 1
+			//oln("Current Index", index)
+			continue
+		} else if strings.ToLower(atom) == "and" && flag == 1 {
+			continue
+		}
+		// log.Println(index)
+		switch index {
+		case 0: // select뒤에 나오는 인자를 파싱
+			if atom == "*" {
+				// nothing.
+				// 모든 데이터를 의미함
+				selectAllFlag = true
+			} else if ok, aggregateName := isAggregateFunc(atom); ok {
+				// 집계함수인 경우
+				temp := strings.TrimPrefix(atom, aggregateName+"(")
+				aggregateValue := strings.TrimSuffix(temp, ")")
+				col := Select{
+					ColumnType:     2,
+					ColumnName:     "",
+					AggregateName:  aggregateName,
+					AggregateValue: aggregateValue,
+				}
+				parsedQuery.Columns = append(parsedQuery.Columns, col)
+			} else {
+				// 컬럼명인 경우
+				columnName := strings.TrimSuffix(atom, ",")
+
+				col := Select{
+					ColumnType:     1,
+					ColumnName:     columnName,
+					AggregateName:  "",
+					AggregateValue: "",
+				}
+				parsedQuery.Columns = append(parsedQuery.Columns, col)
+			}
+		case 1:
+			parsedQuery.TableName = atom
+		case 2:
+			if operatorFlag {
+				if ok, operator := isOperator(atom); ok {
+					parsedQuery.WhereClauses[len(parsedQuery.WhereClauses)-1].Operator = operator
+					operatorFlag = false
+				} else {
+					return ParsedQuery{}, errors.New("Invaild Query")
+				}
+			} else {
+				if ok, exp := isEXP(atom); ok {
+					whereSlice = strings.Split(atom, exp)
+					w := Where{
+						LeftValue:  whereSlice[0],
+						Exp:        exp,
+						RightValue: whereSlice[1],
+						Operator:   "NULL",
+					}
+					parsedQuery.WhereClauses = append(parsedQuery.WhereClauses, w)
+					// operatorFlag = true
+
+				} else {
+					return ParsedQuery{}, errors.New("Invaild Query")
+				}
+			}
+
+		}
+	}
+
+	if selectAllFlag {
+		schema := getTableSchema(parsedQuery.TableName)
+		for _, columnName := range schema.ColumnNames {
+			col := Select{
+				ColumnType:     1,
+				ColumnName:     columnName,
+				AggregateName:  "",
+				AggregateValue: "",
+			}
+			parsedQuery.Columns = append(parsedQuery.Columns, col)
+		}
+
+	}
+	//klog.Infoln(*request)
+	return parsedQuery, nil
 }
 
 func main() {
