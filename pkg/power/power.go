@@ -31,7 +31,6 @@ func (fp *FormulaProvider) GetPower(powerchan chan float64) {
 
 	var a string
 	for _, str := range slice {
-		//fmt.Println(str)
 		a = str
 	}
 
@@ -39,11 +38,6 @@ func (fp *FormulaProvider) GetPower(powerchan chan float64) {
 	b = a[0:5]
 	// secondslice := strings.Split(a, " ")
 
-	// var b string
-	// for _, str := range secondslice {
-	// 	b = str
-	// }
-	//fmt.Println(b)
 	s, err := strconv.ParseFloat(b, 64)
 	if err != nil {
 		fmt.Println(err)
