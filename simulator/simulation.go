@@ -313,6 +313,39 @@ func Parse(query string) (ParsedQuery, error) {
 	return parsedQuery, nil
 }
 
+func makeColumnToString(reqColumn []types.Select, schema types.TableSchema) []string {
+	result := make([]string, 0)
+	for _, sel := range reqColumn {
+		if sel.ColumnType == 1 {
+			if sel.ColumnName != "*" {
+				result = append(result, sel.ColumnName)
+			} else {
+				result = append(result, schema.ColumnNames...)
+			}
+		}
+	}
+	return result
+}
+
+func rowToTableData(rows [][]string, schema types.TableSchema) map[string][]string {
+	result := make(map[string][]string)
+	for i := 0; i < len(schema.ColumnNames); i++ {
+		result[rows[0][i]] = make([]string, 0)
+		index := 0
+		for {
+			if schema.ColumnNames[index] == rows[0][i] {
+				break
+			}
+			index++
+		}
+		for j := 1; j < len(rows); j++ {
+			result[rows[0][i]] = append(result[rows[0][i]], rows[j][i])
+		}
+		index = 0
+	}
+	return result
+}
+
 func main() {
 	log.SetFlags(log.Lshortfile)
 }
