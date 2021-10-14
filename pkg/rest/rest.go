@@ -14,7 +14,7 @@ var flag = 1
 var ans analysis.Analysis
 
 func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	log.Println("Measure Start")
+	log.Println("Measure Start Request")
 	cpuChan := make(chan float64)
 	memChan := make(chan float64)
 	var cpuList []float64
@@ -67,7 +67,7 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 }
 
 func EndMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	log.Println("Measure End")
+	log.Println("Measure End Request")
 	// flagChan := make(chan int)
 	// analysis.SetFlag(flagChan)
 	// flagChan <- 1
