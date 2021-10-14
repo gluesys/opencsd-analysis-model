@@ -677,6 +677,59 @@ func Output(filterdata FilterData) ResponseA {
 	return tmp
 }
 
+// start measure
+func StartMeasure(mc chan analysis.Analysis) {
+	log.Println("Measure Start")
+	// flagChan := make(chan int)
+	// avgChan := make(chan float64)
+	cpuChan := make(chan float64)
+	memChan := make(chan float64)
+	var cpuList []float64
+	var memList []float64
+
+	// analysis.GetCPU(flagChan, avgChan)
+	// go analysis.GetCPU(cpuChan)
+	// go analysis.GetMem()
+	// log.Println(ans)
+
+	for {
+		if flag == 0 {
+			break
+		}
+		go analysis.GetCPU(cpuChan)
+		go analysis.GetMem(memChan)
+		cpuList = append(cpuList, <-cpuChan)
+		memList = append(memList, <-memChan)
+	}
+	cpuTotal := 0.0
+	for _, cpu := range cpuList {
+		cpuTotal = cpuTotal + cpu
+	}
+	cpuAvg := cpuTotal / float64(len(cpuList))
+	memTotal := 0.0
+	for _, mem := range memList {
+		memTotal = memTotal + mem
+	}
+	memAvg := memTotal / float64(len(memList))
+	// analysis.GetMemory()
+	// log.Println("CPU Usage", cpuAvg)
+	// log.Println("MEM Usage", memAvg)
+
+	predict := 96.2107 + (cpuAvg * -(0.4059)) + (memAvg * (-17.2624))
+	// log.Println("POWER Usage", predict)
+
+	measure := analysis.Analysis{
+		Cpu:    cpuAvg,
+		Memory: memAvg,
+		Energy: predict,
+	}
+	// log.Println(measure)
+	ans = measure
+	log.Println("Query End")
+	mc <- ans
+	// return ans
+}
+
 func main() {
 	log.SetFlags(log.Lshortfile)
 }
