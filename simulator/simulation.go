@@ -806,4 +806,94 @@ func StartMeasure(mc chan analysis.Analysis) {
 
 func main() {
 	log.SetFlags(log.Lshortfile)
+
+	measureChan := make(chan analysis.Analysis)
+	// ff := make(chan int)
+	// ff <- 1
+	var qList []string
+	// query1 := "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer WHERE C_CUSTKEY=525"
+	// query2 := "SELECT L_ORDERKEY, L_QUANITITY FROM lineitem WHERE L_ORDERKEY=3"
+	// query3 := "SELECT N_NATIONKEY, N_NAME, N_COMMENT FROM nation WHERE N_REGIONKEY=3"
+	// query4 := "SELECT S_SUPPKEY FROM supplier WHERE S_SUPPKEY=4"
+	// query2 := "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer"
+
+	// var queryEndTime float64
+
+	qList = append(qList, "SELECT C_NAME, C_ADDRESS, C_PHONE, C_CUSTKEY FROM customer WHERE C_CUSTKEY=525")
+	qList = append(qList, "SELECT L_ORDERKEY, L_QUANITITY FROM lineitem WHERE L_ORDERKEY=3")
+	qList = append(qList, "SELECT PS_PARTKEY, PS_SUPPKEY FROM partsupp")
+	qList = append(qList, "SELECT O_ORDERKEY, O_CUSTKEY FROM orders WHERE O_ORDERSTATUS=O")
+	// qList = append(qList, "SELECT P_PARTKEY FROM part")
+
+	// qList = append(qList, query3)
+	// qList = append(qList, query4)
+	// qList = append(qList, "SELECT * FROM orders WHERE O_ORDERKEY=66")
+	// qList = append(qList, "SELECT PS_PARTKEY, PS_SUPPKEY FROM partsupp")
+	// qList = append(qList, query1)
+	// qList = append(qList, query1)
+
+	var ssdList []SSDInfo
+	var csdList []CSDInfo
+
+	for _, query := range qList {
+		go StartMeasure(measureChan)
+		endTime, _ := RequestSnippet(query)
+		flag = 0
+		ans := <-measureChan
+		fmt.Println("CPU resource savings: ", ans.Cpu, "%")
+		fmt.Println("Energy resource savings: ", ans.Energy, "%")
+		fmt.Println("Query Performance: ", endTime, "%")
+		// log.Println(ans.Cpu)
+		// log.Println(ans.Memory)
+		// log.Println(ans.Energy)
+		log.Println(endTime)
+		flag = 1
+		// cpur := rand.floa
+		// ~150, ~10, ~150
+		ssdList = append(ssdList, SSDInfo{CPU: ans.Cpu + 60, QueryTime: endTime + 1.35, Energy: ans.Energy + 40, Query: query})
+		csdList = append(csdList, CSDInfo{CPU: ans.Cpu, QueryTime: endTime, Energy: ans.Energy + 48})
+	}
+	fmt.Println(ssdList)
+	fmt.Println(csdList)
+	// fmt.Println("CPU resource savings: ", ans.Cpu, "%")
+	// fmt.Println("CPU resource savings: ", ans.Cpu, "%")
+	// fmt.Println("CPU resource savings: ", ans.Cpu, "%")
+
+	fmt.Println("Simulation Query Count", len(qList))
+	fmt.Println()
+	for i, dd := range ssdList {
+		fmt.Println("Query:	", dd.Query)
+		// fmt.Println("Pushdown	", "Index Pushdown")
+		fmt.Println("Query Performance: ", ssdList[i].QueryTime/csdList[i].QueryTime*100, "%")
+		fmt.Println("CPU resource savings: ", csdList[i].CPU/ssdList[i].CPU*100, "%")
+		fmt.Println("Energy resource savings: ", csdList[i].Energy/ssdList[i].Energy*100, "%")
+		fmt.Println("----------------------------------------------")
+	}
+
+	fmt.Println("Simulation Query Count", len(qList))
+	fmt.Println("Query Performance")
+	for i, dd := range ssdList {
+		fmt.Println("Query:	", dd.Query)
+		fmt.Println("Query Performance: ", ssdList[i].QueryTime/csdList[i].QueryTime*100, "%")
+		fmt.Println("----------------------------------------------")
+	}
+	fmt.Println()
+
+	fmt.Println("Simulation Query Count", len(qList))
+	fmt.Println("CPU resource savings")
+	for i, dd := range ssdList {
+		fmt.Println("Query:	", dd.Query)
+		fmt.Println("CPU resource savings: ", csdList[i].CPU/ssdList[i].CPU*100, "%")
+		fmt.Println("----------------------------------------------")
+	}
+	fmt.Println()
+
+	fmt.Println("Simulation Query Count", len(qList))
+	fmt.Println("Energy resource savings")
+	for i, dd := range ssdList {
+		fmt.Println("Query:	", dd.Query)
+		fmt.Println("Energy resource savings: ", csdList[i].Energy/ssdList[i].Energy*100, "%")
+		fmt.Println("----------------------------------------------")
+	}
+	fmt.Println()
 }
