@@ -59,17 +59,6 @@ func GetCPU(cpuChan chan float64) {
 	cpuChan <- cpuUsage
 
 	fmt.Println(cpuBenefit)
-	// 	if flag == 0 {
-	// 		break
-	// 	}
-	// }
-	// total := 0.0
-	// for _, cpu := range cpuList {
-	// 	total += cpu
-	// }
-	// avg := total / float64(len(cpuList))
-
-	// avgChan <- avg
 }
 
 func GetMem(memChan chan float64) {
