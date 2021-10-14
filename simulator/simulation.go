@@ -1,6 +1,8 @@
 package simulator
 
 import (
+	"bufio"
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -344,6 +346,59 @@ func rowToTableData(rows [][]string, schema types.TableSchema) map[string][]stri
 		index = 0
 	}
 	return result
+}
+func Scan(snippet Snippet) ScanData {
+
+	body, err := json.Marshal(snippet)
+	if err != nil {
+		log.Println(err)
+	}
+
+	recieveData := &types.Snippet{}
+	err = json.Unmarshal(body, recieveData)
+	if err != nil {
+		//klog.Errorln(err)
+		log.Println(err)
+	}
+
+	data := recieveData
+
+	resp := &types.QueryResponse{
+		Table:  data.Parsedquery.TableName,
+		Field:  makeColumnToString(data.Parsedquery.Columns, data.TableSchema),
+		Values: make([]map[string]string, 0),
+	}
+	log.Println("Table Name >", resp.Table)
+	log.Println("Block Offset >", data.BlockOffset)
+	log.Println("Real Path >", rootDirectory+data.Parsedquery.TableName+".csv")
+	log.Println("Scanning...")
+	// fmt.Println(time.Now().Format(time.StampMilli), "Table Name >", resp.Table)
+	// fmt.Println(time.Now().Format(time.StampMilli), "Block Offset >", data.BlockOffset)
+	// fmt.Println(time.Now().Format(time.StampMilli), "Real Path >", rootDirectory+data.Parsedquery.TableName+".csv")
+	// fmt.Println(time.Now().Format(time.StampMilli), "Scanning...")
+	tableCSV, err := os.Open(rootDirectory + data.Parsedquery.TableName + ".csv")
+	if err != nil {
+		//klog.Errorln(err)
+		log.Println(err)
+	}
+	// csv reader 생성
+	rdr := csv.NewReader(bufio.NewReader(tableCSV))
+
+	// csv 내용 모두 읽기
+	rows, _ := rdr.ReadAll()
+	log.Println("Compleate Read", len(rows), "Data")
+	// fmt.Println(time.Now().Format(time.StampMilli), "Compleate Read", len(rows), "Data")
+	tableData := rowToTableData(rows, data.TableSchema)
+	log.Println("Send to Filtering Data...")
+	// fmt.Println(time.Now().Format(time.StampMilli), "Send to Filtering Data...")
+
+	filterBody := &ScanData{}
+	filterBody.Snippet = *data
+	filterBody.Tabledata = tableData
+
+	// filterBody
+
+	return *filterBody
 }
 
 func main() {
