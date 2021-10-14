@@ -316,6 +316,7 @@ func Parse(query string) (ParsedQuery, error) {
 	return parsedQuery, nil
 }
 
+// SCAN
 func makeColumnToString(reqColumn []types.Select, schema types.TableSchema) []string {
 	result := make([]string, 0)
 	for _, sel := range reqColumn {
@@ -616,6 +617,64 @@ func Filtering(filterData ScanData) FilterData {
 
 	// outputBody
 	return *outputBody
+}
+
+// output
+func makeResponse(resp *types.QueryResponse, resultData map[string][]string) ResponseA {
+	fmt.Println(time.Now().Format(time.StampMilli), "Prepare Output Response...")
+	maxLen := 0
+	for _, header := range resp.Field {
+		if maxLen < len(resultData[header]) {
+			maxLen = len(resultData[header])
+		}
+	}
+	for i := 0; i < maxLen; i++ {
+		resultMap := make(map[string]string)
+		for _, header := range resp.Field {
+			if len(resultData[header]) > 1 {
+				resultMap[header] = resultData[header][0]
+				resultData[header] = resultData[header][1:]
+			} else if len(resultData[header]) > 0 {
+				resultMap[header] = resultData[header][0]
+			} else {
+				resultMap[header] = ""
+			}
+		}
+		resp.Values = append(resp.Values, resultMap)
+	}
+
+	fmt.Println(time.Now().Format(time.StampMilli), "Buffer Address >", resp.BufferAddress)
+	fmt.Println(time.Now().Format(time.StampMilli), "Complete To Prepare Response")
+	fmt.Println(time.Now().Format(time.StampMilli), "Done")
+
+	r := ResponseA{200, "OK", *resp}
+
+	return r
+}
+func Output(filterdata FilterData) ResponseA {
+	//data := []byte("Response From Output Process")
+	//w.Write(data)
+
+	body, err := json.Marshal(filterdata)
+	if err != nil {
+		//klog.Errorln(err)
+		log.Println(err)
+	}
+
+	recieveData := &FilterData{}
+	err = json.Unmarshal(body, recieveData)
+	if err != nil {
+		//klog.Errorln(err)
+		fmt.Println(err)
+	}
+
+	result := &recieveData.Result
+	tempData := recieveData.TempData
+
+	tmp := makeResponse(result, tempData)
+	// body, _ := ioutil.ReadAll(res.Body)
+
+	return tmp
 }
 
 func main() {
