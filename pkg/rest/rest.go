@@ -12,6 +12,12 @@ import (
 
 var flag = 1
 
+type Metrics struct {
+	CPU    []string
+	Memory []string
+	Power  []string
+}
+
 func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	log.Println("Measure Start Request")
 	cpuChan := make(chan float64)
