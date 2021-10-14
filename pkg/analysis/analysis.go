@@ -100,11 +100,9 @@ func GetMemory() {
 		time.Sleep(time.Second)
 	}
 
-	// Clear our memory and print usage, unless the GC has run 'Alloc' will remain the same
 	overall = nil
 	PrintMemUsage()
 
-	// Force GC to clear up, should see a memory drop
 	runtime.GC()
 	PrintMemUsage()
 }
