@@ -25,6 +25,7 @@ func (f *formula) getCoefficient(formula string) (err error) {
 	if err != nil {
 		return err
 	}
+	spstring = spstring[1:]
 
 	return nil
 
