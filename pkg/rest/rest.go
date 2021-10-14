@@ -38,7 +38,6 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		memTotal = memTotal + mem
 	}
 	memAvg := memTotal / float64(len(memList))
-	// analysis.GetMemory()
 	log.Println("CPU Usage", cpuAvg)
 	log.Println("MEM Usage", memAvg)
 
