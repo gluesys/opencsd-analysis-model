@@ -6,11 +6,13 @@ import (
 	"net/http"
 
 	"analysis-model/pkg/analysis"
+	"analysis-model/pkg/power"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 var flag = 1
+var onCSD = 0
 
 type Metrics struct {
 	CPU    []string
@@ -22,18 +24,37 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	log.Println("Measure Start Request")
 	cpuChan := make(chan float64)
 	memChan := make(chan float64)
+	powerChan := make(chan float64)
 	var cpuList []float64
 	var memList []float64
+	var powerList []float64
 
-	for {
-		if flag == 0 {
-			break
+	if onCSD != 0 {
+		fp := power.NewFormula()
+		for {
+			if flag == 0 {
+				break
+			}
+			go analysis.GetCPU(cpuChan)
+			go analysis.GetMem(memChan)
+			go fp.GetPower(powerChan)
+			cpuList = append(cpuList, <-cpuChan)
+			memList = append(memList, <-memChan)
+			powerList = append(powerList, <-powerChan)
 		}
-		go analysis.GetCPU(cpuChan)
-		go analysis.GetMem(memChan)
-		cpuList = append(cpuList, <-cpuChan)
-		memList = append(memList, <-memChan)
+	} else {
+		for {
+			if flag == 0 {
+				break
+			}
+			go analysis.GetCPU(cpuChan)
+			go analysis.GetMem(memChan)
+			cpuList = append(cpuList, <-cpuChan)
+			memList = append(memList, <-memChan)
+
+		}
 	}
+
 	cpuTotal := 0.0
 	for _, cpu := range cpuList {
 		cpuTotal = cpuTotal + cpu
@@ -44,6 +65,7 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		memTotal = memTotal + mem
 	}
 	memAvg := memTotal / float64(len(memList))
+
 	log.Println("CPU Usage", cpuAvg)
 	log.Println("MEM Usage", memAvg)
 
