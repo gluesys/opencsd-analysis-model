@@ -73,7 +73,7 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 	if err != nil {
 		log.Println(err)
 	}
-
+	fmt.Printf("\nRegression Formula:\n%v\n\n", fp.Formula.Regression.Formula)
 	err = fp.Formula.getCoefficient(fp.Formula.Regression.Formula)
 	if err != nil {
 		log.Println(err)
