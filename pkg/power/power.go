@@ -29,7 +29,7 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 		for _, atom := range s {
 			record, err := strconv.ParseFloat(atom, 64)
 			if err != nil {
-				klog.Errorln(err)
+				log.Println(err)
 			}
 			r = append(r, record)
 		}
