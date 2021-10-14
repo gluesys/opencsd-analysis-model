@@ -77,6 +77,17 @@ type ResponseA struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+type SSDInfo struct {
+	Query     string  `json:"query"`
+	CPU       float64 `json:"cpu"`
+	Energy    float64 `json:"energy"`
+	QueryTime float64 `json:"queryTime"`
+}
+type CSDInfo struct {
+	CPU       float64 `json:"cpu"`
+	Energy    float64 `json:"energy"`
+	QueryTime float64 `json:"queryTime"`
+}
 
 var flag = 1
 var ans analysis.Analysis
