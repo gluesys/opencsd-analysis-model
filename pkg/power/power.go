@@ -56,6 +56,16 @@ func (fp *FormulaProvider) Regression(start [][]string) (a float64, b float64, i
 	fp.Formula.Regression.SetObserved("Power")
 	fp.Formula.Regression.SetVar(0, "Cpu")
 	fp.Formula.Regression.SetVar(1, "Memory")
+
+	for i, record := range records {
+		power := records[i][0]
+		power = (power - powerMin) / (powerMax - powerMin)
+		cpu := record[1]
+		cpu = (cpu - cpuMin) / (cpuMax - cpuMin)
+		memory := record[2]
+		memory = (memory - memMin) / (memMax - memMin)
+
+	}
 }
 
 func (f *formula) getCoefficient(formula string) (err error) {
