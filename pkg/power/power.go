@@ -22,6 +22,9 @@ func (f *formula) getCoefficient(formula string) (err error) {
 	temp := strings.Split(formula, " = ")
 	spstring := strings.Split(temp[1], " + ")
 	f.Intercept, err = strconv.ParseFloat(spstring[0], 64)
+	if err != nil {
+		return err
+	}
 
 	return nil
 
