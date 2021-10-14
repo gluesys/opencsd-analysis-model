@@ -66,6 +66,14 @@ func StartMeasure(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 	memAvg := memTotal / float64(len(memList))
 
+	if onCSD == 0 {
+		powerTotal := 0.0
+		for _, power := range powerList {
+			powerTotal = powerTotal + power
+		}
+		powerAvg := powerTotal / float64(len(powerList))
+	}
+
 	log.Println("CPU Usage", cpuAvg)
 	log.Println("MEM Usage", memAvg)
 
